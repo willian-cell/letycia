@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Força da Fiel — Doe para o Estádio</title>
+  <meta name="description" content="Página simples e responsiva para arrecadação de doações para o estádio do Corinthians. Cores: preto, vermelho e branco." />
+  <style>
+    :root {
+      --preto: #0f0f10;
+      --preto-2: #161618;
+      --branco: #ffffff;
+      --cinza: #c9c9cf;
+      --cinza-2: #8c8c93;
+      --vermelho: #d61123; /* acento principal */
+      --vermelho-2: #b00f1d;
+      --borda: rgba(255,255,255,.08);
+      --shadow: 0 6px 28px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--branco);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(214,17,35,.20), transparent 65%),
+                  radial-gradient(900px 700px at 10% 110%, rgba(214,17,35,.18), transparent 60%),
+                  linear-gradient(180deg, #0a0a0b, #101113 60%, #0d0e10);
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 24px; }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 40;
+      backdrop-filter: saturate(140%) blur(8px);
+      background: rgba(16,17,19,.55);
+      border-bottom: 1px solid var(--borda);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px; padding: 14px 0;
+    }
+    .badge {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 800;
+      background: var(--vermelho); color: var(--branco);
+      box-shadow: 0 0 0 3px rgba(214,17,35,.25);
+    }
+    .title { font-size: clamp(22px, 3.6vw, 34px); letter-spacing: .5px; font-weight: 900; text-transform: uppercase; }
+    .subtitle { color: var(--cinza); font-size: 14px; }
+
+    /* Hero */
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: center; padding: 36px 0 12px; }
+    .hero h1 { font-size: clamp(28px, 5vw, 48px); line-height: 1.08; margin: 0 0 10px; }
+    .hero p { color: var(--cinza); font-size: clamp(15px, 2.6vw, 18px); margin: 0 0 20px; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      border: 1px solid var(--borda); color: var(--branco);
+      background: linear-gradient(180deg, rgba(214,17,35,.95), var(--vermelho-2));
+      padding: 12px 18px; border-radius: 12px; font-weight: 700; letter-spacing: .2px;
+      transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+      box-shadow: 0 10px 22px rgba(214,17,35,.30), inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 28px rgba(214,17,35,.38); }
+    .btn.alt { background: #131417; border: 1px solid var(--borda); }
+    .btn.alt:hover { box-shadow: 0 10px 24px rgba(0,0,0,.45); }
+
+    .hero-card {
+      border: 1px solid var(--borda); border-radius: var(--radius); padding: 22px; background: linear-gradient(180deg, #131417, #0f1012);
+      box-shadow: var(--shadow);
+    }
+    .meter { background: #1c1d22; border-radius: 999px; padding: 6px; border: 1px solid var(--borda); }
+    .meter > div { height: 16px; border-radius: 999px; background: linear-gradient(90deg, #ff445a, #f51d2e 40%, #d61123 75%);
+      width: 0%; transition: width 1s ease-in-out; box-shadow: inset 0 -1px 6px rgba(0,0,0,.5), 0 0 16px rgba(214,17,35,.45);
+    }
+    .progress-row { display: flex; justify-content: space-between; margin: 10px 2px 0; color: var(--cinza); font-size: 13px; }
+
+    /* Donation */
+    .section { margin: 42px 0; }
+    .card { border: 1px solid var(--borda); border-radius: var(--radius); background: linear-gradient(180deg, #131417, #0f1012); box-shadow: var(--shadow); padding: 22px; }
+    .section h2 { margin: 0 0 16px; font-size: clamp(20px, 3.4vw, 28px); }
+
+    .amounts { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+    .chip {
+      border: 1px solid var(--borda); border-radius: 12px; padding: 12px; text-align: center; background: #15161a; cursor: pointer;
+      transition: border-color .2s ease, transform .12s ease;
+    }
+    .chip:hover { transform: translateY(-1px); border-color: rgba(214,17,35,.45); }
+    .chip.active { border-color: var(--vermelho); box-shadow: 0 0 0 3px rgba(214,17,35,.18) inset; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .input {
+      display: flex; align-items: center; gap: 8px; background: #0f1012; border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; color: var(--branco);
+    }
+    .input input { all: unset; flex: 1; font-size: 18px; }
+    .hint { color: var(--cinza-2); font-size: 13px; margin-top: 6px; }
+
+    .method-tabs { display: inline-flex; border: 1px solid var(--borda); border-radius: 10px; overflow: hidden; }
+    .method-tabs button { background: #15161a; color: var(--cinza); padding: 10px 14px; border: none; cursor: pointer; }
+    .method-tabs button.active { background: var(--vermelho); color: var(--branco); }
+
+    .pix-box { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; }
+    .qr {
+      border: 1px dashed rgba(255,255,255,.2); border-radius: 12px; display: grid; place-items: center; aspect-ratio: 1 / 1;
+      color: var(--cinza); background: repeating-linear-gradient(45deg, #121316, #121316 12px, #14161a 12px, #14161a 24px);
+    }
+    .qr small { color: var(--cinza-2); }
+
+    .icon { width: 20px; height: 20px; opacity: .9; }
+    .row { display: flex; align-items: center; gap: 10px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .stat { padding: 16px; border: 1px solid var(--borda); border-radius: 12px; background: #121317; }
+    .stat .k { font-size: 22px; font-weight: 800; }
+    .stat .t { color: var(--cinza); font-size: 13px; }
+
+    details { border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; background: #121317; }
+    summary { cursor: pointer; font-weight: 700; }
+
+    footer { margin: 40px 0 20px; color: var(--cinza-2); font-size: 13px; text-align: center; }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .pix-box { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .amounts { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <div class="brand">
+        <div class="badge" aria-hidden>F</div>
+        <div>
+          <div class="title">Força da Fiel</div>
+          <div class="subtitle">Ajude a fortalecer a Casa do Povo</div>
+        </div>
+      </div>
+      <a href="#doar" class="btn" style="white-space:nowrap;">Doar agora</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <h1>: Ajude a Nação  <span style="color:var(--vermelho)">Corinthiana</span> junta pela nossa casa</h1>
+        <p>
+          Esta é uma página modelo de arrecadação para apoiar o estádio. Transparência, segurança e experiência simples para a Fiel contribuir.
+          Personalize os textos, a meta e a chave PIX e publique no seu servidor.
+        </p>
+        <div class="cta-row">
+          <a class="btn" href="#doar">Quero contribuir</a>
+          <a class="btn alt" href="#transparencia">Como o dinheiro será usado</a>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-labelledby="progresso">
+        <div class="row" style="justify-content:space-between;">
+          <h3 id="progresso" style="margin:0">Progresso da campanha</h3>
+          <span class="subtitle" id="progress-label">Arrecadado: R$ 0 de R$ 0</span>
+        </div>
+        <div class="meter" aria-hidden><div id="bar"></div></div>
+        <div class="progress-row">
+          <span id="arrecadado">R$ 1.234.567</span>
+          <span id="meta">Meta: R$ 5.000.000</span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- DOAÇÃO -->
+    <section id="doar" class="section">
+      <div class="card">
+        <h2>Escolha um valor para doar</h2>
+        <div class="amounts" aria-label="Valores sugeridos">
+          <button class="chip" data-amount="20">R$ 20</button>
+          <button class="chip" data-amount="50">R$ 50</button>
+          <button class="chip" data-amount="100">R$ 100</button>
+          <button class="chip" data-amount="200">R$ 200</button>
+        </div>
+
+        <div class="grid" style="margin-top:16px; align-items:start;">
+          <div>
+            <label class="subtitle" for="valor">Outro valor</label>
+            <div class="input">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <input id="valor" inputmode="numeric" placeholder="R$ 0,00" aria-label="Digite um valor em reais" />
+            </div>
+            <div class="hint">Sugestão: contribuições recorrentes ajudam mais.</div>
+          </div>
+
+          <div>
+            <label class="subtitle">Forma de pagamento</label>
+            <div class="method-tabs" role="tablist" aria-label="Métodos de pagamento">
+              <button id="tab-pix" class="active" role="tab" aria-selected="true">PIX</button>
+              <button id="tab-cartao" role="tab" aria-selected="false">Cartão (exemplo)</button>
+              <button id="tab-boleto" role="tab" aria-selected="false">Boleto (exemplo)</button>
+            </div>
+            <div class="hint">Este modelo traz PIX funcional (chave/QR). Os demais são demonstração visual.</div>
+          </div>
+        </div>
+
+        <div class="pix-box" style="margin-top:18px;" id="pixBox">
+          <div class="qr" aria-label="QR Code PIX">
+            <div style="text-align:center">
+              <div style="font-weight:700; margin-bottom:6px;">QR PIX</div>
+              <small>Substitua por uma imagem de QR gerada pela sua instituição</small>
+            </div>
+          </div>
+          <div>
+            <div class="subtitle" style="margin-bottom:6px;">Chave PIX oficial</div>
+            <div class="input" style="margin-bottom:10px;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              <input id="pixKey" value="pix@exemplo.com.br" aria-label="Chave PIX" />
+              <button id="copyPix" class="btn alt" type="button" aria-label="Copiar chave PIX">Copiar</button>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnDoarPix" type="button">Doar via PIX</button>
+              <button class="btn alt" id="btnCompartilhar" type="button">Compartilhar campanha</button>
+            </div>
+            <div class="hint">Ao clicar em Doar via PIX, selecione o valor desejado e conclua no seu banco. Depois salve o comprovante.</div>
+          </div>
+        </div>
+
+        <div id="cartaoBox" class="hint" hidden>
+          Interface ilustrativa. Integre com seu gateway (PagSeguro, Mercado Pago, Stripe etc.).
+        </div>
+        <div id="boletoBox" class="hint" hidden>
+          Interface ilustrativa. Gere boletos pelo seu banco ou provedor de pagamentos.
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACTO / ESTATÍSTICAS -->
+    <section class="section" id="transparencia">
+      <div class="stats">
+        <div class="stat"><div class="k">+2.500</div><div class="t">assentos revitalizados</div></div>
+        <div class="stat"><div class="k">100%</div><div class="t">prestação de contas</div></div>
+        <div class="stat"><div class="k">R$ 800k</div><div class="t">em manutenção anual</div></div>
+        <div class="stat"><div class="k">A+</div><div class="t">acessibilidade e segurança</div></div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <h2>Transparência</h2>
+        <p class="subtitle" style="margin-top:8px;">
+          Publicaremos relatórios mensais com notas fiscais e extratos. A gestão dos recursos seguirá boas práticas de compliance e auditoria independente.
+        </p>
+        <details style="margin-top:12px;">
+          <summary>Detalhes do uso previsto</summary>
+          <ul>
+            <li>Manutenção estrutural e elétrica do estádio.</li>
+            <li>Modernização de acessos, catracas e sinalização.</li>
+            <li>Projetos de acessibilidade e melhorias para torcedores.</li>
+            <li>Programas sociais ligados ao esporte e formação de base.</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="section">
+      <div class="card">
+        <h2>Tire dúvidas e receba os relatórios</h2>
+        <form id="contato" class="grid" onsubmit="event.preventDefault(); alert('Obrigado! Entraremos em contato.');">
+          <label>
+            <div class="subtitle">Seu nome</div>
+            <div class="input"><input required placeholder="Nome completo"/></div>
+          </label>
+          <label>
+            <div class="subtitle">E-mail</div>
+            <div class="input"><input type="email" required placeholder="seuemail@dominio.com"/></div>
+          </label>
+          <label>
+            <div class="subtitle">Mensagem</div>
+            <div class="input"><input placeholder="Escreva sua mensagem"/></div>
+            <div class="hint">Responderemos em até 2 dias úteis.</div>
+          </label>
+          <div>
+            <div class="subtitle">Autorização</div>
+            <label style="display:flex; gap:8px; align-items:center; color:var(--cinza); font-size:14px;">
+              <input type="checkbox" required /> Aceito receber atualizações da campanha e os relatórios de prestação de contas.
+            </label>
+            <div style="margin-top:12px;">
+              <button class="btn" type="submit">Enviar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      Modelo de página para fins ilustrativos. Substitua valores, textos e chaves por dados oficiais e siga a legislação vigente.
+    </footer>
+  </main>
+
+  <script>
+    // Valores de exemplo — personalize aqui
+    const META = 5_000_000;         // Meta de arrecadação em R$
+    const ARRECADADO = 1_234_567;   // Valor já arrecadado em R$
+
+    const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const bar = document.querySelector('#bar');
+    const arrecSpan = document.querySelector('#arrecadado');
+    const metaSpan = document.querySelector('#meta');
+    const progressLabel = document.querySelector('#progress-label');
+
+    arrecSpan.textContent = fmt.format(ARRECADADO);
+    metaSpan.textContent = 'Meta: ' + fmt.format(META);
+    progressLabel.textContent = `Arrecadado: ${fmt.format(ARRECADADO)} de ${fmt.format(META)}`;
+    const pct = Math.min(100, Math.round(ARRECADADO / META * 100));
+    requestAnimationFrame(() => { bar.style.width = pct + '%'; });
+
+    // Seleção de valores
+    const chips = [...document.querySelectorAll('.chip')];
+    const valorInput = document.querySelector('#valor');
+    const pick = (v) => {
+      chips.forEach(c => c.classList.toggle('active', Number(c.dataset.amount) === v));
+      valorInput.value = fmt.format(v);
+    };
+    chips.forEach(c => c.addEventListener('click', () => pick(Number(c.dataset.amount))));
+
+    // Máscara simples BRL no input manual
+    valorInput.addEventListener('input', (e) => {
+      const digits = e.target.value.replace(/\D/g, '');
+      const cents = (Number(digits) / 100) || 0;
+      e.target.value = fmt.format(cents);
+      chips.forEach(c => c.classList.remove('active'));
+    });
+
+    // Tabs de método
+    const tabPix = document.querySelector('#tab-pix');
+    const tabCard = document.querySelector('#tab-cartao');
+    const tabBol = document.querySelector('#tab-boleto');
+    const pixBox = document.querySelector('#pixBox');
+    const cardBox = document.querySelector('#cartaoBox');
+    const bolBox = document.querySelector('#boletoBox');
+
+    function setTab(sel) {
+      const tabs = [tabPix, tabCard, tabBol];
+      tabs.forEach(t => t.classList.toggle('active', t === sel));
+      pixBox.hidden = sel !== tabPix;
+      cardBox.hidden = sel !== tabCard;
+      bolBox.hidden  = sel !== tabBol;
+      tabs.forEach(t => t.setAttribute('aria-selected', t === sel ? 'true' : 'false'));
+    }
+    tabPix.addEventListener('click', () => setTab(tabPix));
+    tabCard.addEventListener('click', () => setTab(tabCard));
+    tabBol.addEventListener('click',  () => setTab(tabBol));
+
+    // PIX: copiar chave e simular ação
+    const pixKey = document.querySelector('#pixKey');
+    document.querySelector('#copyPix').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(pixKey.value); alert('Chave PIX copiada. Cole no seu app bancário.'); }
+      catch { alert('Não foi possível copiar. Selecione e copie manualmente.'); }
+    });
+
+    document.querySelector('#btnDoarPix').addEventListener('click', () => {
+      const valorStr = valorInput.value.replace(/\D/g, '');
+      const valor = (Number(valorStr) / 100) || 0;
+      if (!valor) { alert('Escolha um valor para doar.'); return; }
+      alert(`Use a chave PIX "${pixKey.value}" e doe ${fmt.format(valor)} no seu app bancário.`);
+    });
+
+    // Compartilhar campanha
+    document.querySelector('#btnCompartilhar').addEventListener('click', async () => {
+      const data = { title: 'Força da Fiel', text: 'Ajude a fortalecer a Casa do Povo.', url: location.href };
+      if (navigator.share) { try { await navigator.share(data); } catch(e){} }
+      else { try { await navigator.clipboard.writeText(location.href); alert('Link copiado para a área de transferência.'); } catch { alert('Copie o link do navegador para compartilhar.'); } }
+    });
+  </script>
+</body>
+</html>
